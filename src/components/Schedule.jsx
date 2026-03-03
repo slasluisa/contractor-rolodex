@@ -1,36 +1,8 @@
-const availabilityLabels = {
-  available: "Available",
-  limited: "Limited",
-  booked_out: "Booked Out",
-};
+import { availabilityLabels, formatDate, formatTime } from "../utils/format";
 
-function Schedule({ contractor, onBook }) {
+function Schedule({ contractor, onBook, onCancel, mobileBackButton }) {
   const c = contractor;
-  const today = new Date("2026-03-02");
   const dates = Object.keys(c.schedule).sort();
-
-  function formatDate(dateStr) {
-    const d = new Date(dateStr + "T00:00:00");
-    const dayNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-    const monthNames = [
-      "Jan", "Feb", "Mar", "Apr", "May", "Jun",
-      "Jul", "Aug", "Sep", "Oct", "Nov", "Dec",
-    ];
-    const isToday = dateStr === today.toISOString().split("T")[0];
-    return {
-      day: dayNames[d.getDay()],
-      date: `${monthNames[d.getMonth()]} ${d.getDate()}`,
-      isToday,
-    };
-  }
-
-  function formatTime(time) {
-    const [h, m] = time.split(":");
-    const hour = parseInt(h);
-    const ampm = hour >= 12 ? "PM" : "AM";
-    const display = hour > 12 ? hour - 12 : hour === 0 ? 12 : hour;
-    return `${display}:${m} ${ampm}`;
-  }
 
   function rateLabel() {
     if (c.pricing === "per_sqft") {
@@ -52,6 +24,11 @@ function Schedule({ contractor, onBook }) {
 
   return (
     <div className="schedule">
+      {mobileBackButton && (
+        <button className="mobile-back-btn" onClick={mobileBackButton} aria-label="Back to contractor list">
+          &#8592; Back to list
+        </button>
+      )}
       <div className="profile-card">
         <div className="profile-header">
           <div className="profile-avatar">{c.avatar}</div>
@@ -145,6 +122,13 @@ function Schedule({ contractor, onBook }) {
                       <div className="slot-status">
                         <span className="booked-label">Booked</span>
                         <span className="client-name">{slot.client}</span>
+                        <button
+                          className="cancel-btn"
+                          onClick={() => onCancel(c.id, date, i)}
+                          aria-label={`Cancel booking for ${slot.client}`}
+                        >
+                          Cancel
+                        </button>
                       </div>
                     ) : (
                       <div className="slot-status">
@@ -152,6 +136,7 @@ function Schedule({ contractor, onBook }) {
                         <button
                           className="book-btn"
                           onClick={() => onBook(c.id, date, i)}
+                          aria-label={`Book ${c.name} on ${dateStr} at ${formatTime(slot.start)}`}
                         >
                           Book
                         </button>

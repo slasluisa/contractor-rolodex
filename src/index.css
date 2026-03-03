@@ -18,6 +18,101 @@
   --radius: 12px;
   --shadow: 0 1px 3px rgba(0, 0, 0, 0.08), 0 1px 2px rgba(0, 0, 0, 0.06);
   --shadow-lg: 0 10px 40px rgba(0, 0, 0, 0.12);
+  --slot-open-bg: #f0faf3;
+  --slot-open-border: #c6efd2;
+  --slot-open-text: #1b7d3a;
+  --slot-booked-bg: #f8f8f8;
+  --badge-available-bg: #e8f8ee;
+  --badge-available-text: #1b7d3a;
+  --badge-limited-bg: #fff8e6;
+  --badge-limited-text: #b8860b;
+  --badge-booked-bg: #ffeeed;
+  --selected-bg: #e8f2fe;
+  --today-header-bg: #e8f2fe;
+  --cert-tag-bg: #e8f2fe;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not(.light) {
+    --bg: #1a1a1a;
+    --surface: #2a2a2a;
+    --border: #3a3a3a;
+    --text: #f0f0f0;
+    --text-secondary: #a0a0a5;
+    --primary: #4da3ff;
+    --primary-hover: #69b3ff;
+    --success: #30d158;
+    --danger: #ff453a;
+    --warning: #ff9f0a;
+    --shadow: 0 1px 3px rgba(0, 0, 0, 0.3), 0 1px 2px rgba(0, 0, 0, 0.2);
+    --shadow-lg: 0 10px 40px rgba(0, 0, 0, 0.5);
+    --slot-open-bg: #1a2e1f;
+    --slot-open-border: #2d5a3a;
+    --slot-open-text: #6be090;
+    --slot-booked-bg: #333333;
+    --badge-available-bg: #1a3326;
+    --badge-available-text: #6be090;
+    --badge-limited-bg: #3a3020;
+    --badge-limited-text: #e0c060;
+    --badge-booked-bg: #3a2020;
+    --selected-bg: #1a3050;
+    --today-header-bg: #1a3050;
+    --cert-tag-bg: #1a3050;
+  }
+}
+
+.dark {
+  --bg: #1a1a1a;
+  --surface: #2a2a2a;
+  --border: #3a3a3a;
+  --text: #f0f0f0;
+  --text-secondary: #a0a0a5;
+  --primary: #4da3ff;
+  --primary-hover: #69b3ff;
+  --success: #30d158;
+  --danger: #ff453a;
+  --warning: #ff9f0a;
+  --shadow: 0 1px 3px rgba(0, 0, 0, 0.3), 0 1px 2px rgba(0, 0, 0, 0.2);
+  --shadow-lg: 0 10px 40px rgba(0, 0, 0, 0.5);
+  --slot-open-bg: #1a2e1f;
+  --slot-open-border: #2d5a3a;
+  --slot-open-text: #6be090;
+  --slot-booked-bg: #333333;
+  --badge-available-bg: #1a3326;
+  --badge-available-text: #6be090;
+  --badge-limited-bg: #3a3020;
+  --badge-limited-text: #e0c060;
+  --badge-booked-bg: #3a2020;
+  --selected-bg: #1a3050;
+  --today-header-bg: #1a3050;
+  --cert-tag-bg: #1a3050;
+}
+
+.light {
+  --bg: #f5f5f7;
+  --surface: #ffffff;
+  --border: #e5e5e7;
+  --text: #1d1d1f;
+  --text-secondary: #6e6e73;
+  --primary: #0071e3;
+  --primary-hover: #0077ed;
+  --success: #34c759;
+  --danger: #ff3b30;
+  --warning: #ff9500;
+  --shadow: 0 1px 3px rgba(0, 0, 0, 0.08), 0 1px 2px rgba(0, 0, 0, 0.06);
+  --shadow-lg: 0 10px 40px rgba(0, 0, 0, 0.12);
+  --slot-open-bg: #f0faf3;
+  --slot-open-border: #c6efd2;
+  --slot-open-text: #1b7d3a;
+  --slot-booked-bg: #f8f8f8;
+  --badge-available-bg: #e8f8ee;
+  --badge-available-text: #1b7d3a;
+  --badge-limited-bg: #fff8e6;
+  --badge-limited-text: #b8860b;
+  --badge-booked-bg: #ffeeed;
+  --selected-bg: #e8f2fe;
+  --today-header-bg: #e8f2fe;
+  --cert-tag-bg: #e8f2fe;
 }
 
 body {

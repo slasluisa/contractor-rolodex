@@ -1,8 +1,4 @@
-const availabilityLabels = {
-  available: "Available",
-  limited: "Limited",
-  booked_out: "Booked Out",
-};
+import { availabilityLabels } from "../utils/format";
 
 function ContractorCard({ contractor, isSelected, onClick }) {
   const c = contractor;
@@ -16,6 +12,10 @@ function ContractorCard({ contractor, isSelected, onClick }) {
     <div
       className={`contractor-card ${isSelected ? "selected" : ""}`}
       onClick={onClick}
+      role="button"
+      tabIndex={0}
+      aria-label={`${c.name}, ${c.specialty}, rated ${c.rating} stars`}
+      onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); onClick(); } }}
     >
       <div className="card-avatar">{c.avatar}</div>
       <div className="card-body">

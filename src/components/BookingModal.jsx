@@ -1,30 +1,14 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
+import { formatTime, formatDateLong } from "../utils/format";
 
 function BookingModal({ contractor, date, slot, onConfirm, onCancel }) {
   const [clientName, setClientName] = useState("");
   const [notes, setNotes] = useState("");
   const [constructionType, setConstructionType] = useState("new");
   const [sqft, setSqft] = useState("");
+  const modalRef = useRef(null);
 
   const isPerSqft = contractor.pricing === "per_sqft";
-
-  function formatTime(time) {
-    const [h, m] = time.split(":");
-    const hour = parseInt(h);
-    const ampm = hour >= 12 ? "PM" : "AM";
-    const display = hour > 12 ? hour - 12 : hour === 0 ? 12 : hour;
-    return `${display}:${m} ${ampm}`;
-  }
-
-  function formatDate(dateStr) {
-    const d = new Date(dateStr + "T00:00:00");
-    return d.toLocaleDateString("en-US", {
-      weekday: "long",
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-    });
-  }
 
   const hours =
     parseInt(slot.end.split(":")[0]) - parseInt(slot.start.split(":")[0]);
@@ -38,6 +22,42 @@ function BookingModal({ contractor, date, slot, onConfirm, onCancel }) {
     cost = hours * contractor.rate;
   }
 
+  useEffect(() => {
+    document.body.style.overflow = "hidden";
+
+    function handleKeyDown(e) {
+      if (e.key === "Escape") {
+        onCancel();
+        return;
+      }
+      if (e.key === "Tab") {
+        const focusable = modalRef.current.querySelectorAll(
+          'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+        );
+        if (focusable.length === 0) return;
+        const first = focusable[0];
+        const last = focusable[focusable.length - 1];
+        if (e.shiftKey) {
+          if (document.activeElement === first) {
+            e.preventDefault();
+            last.focus();
+          }
+        } else {
+          if (document.activeElement === last) {
+            e.preventDefault();
+            first.focus();
+          }
+        }
+      }
+    }
+
+    document.addEventListener("keydown", handleKeyDown);
+    return () => {
+      document.body.style.overflow = "";
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [onCancel]);
+
   function handleSubmit(e) {
     e.preventDefault();
     if (!clientName.trim()) return;
@@ -48,16 +68,16 @@ function BookingModal({ contractor, date, slot, onConfirm, onCancel }) {
   const canSubmit = clientName.trim() && (!isPerSqft || (sqft && parseFloat(sqft) > 0));
 
   return (
-    <div className="modal-overlay" onClick={onCancel}>
-      <div className="modal" onClick={(e) => e.stopPropagation()}>
-        <button className="modal-close" onClick={onCancel}>
+    <div className="modal-overlay" onClick={onCancel} role="dialog" aria-modal="true" aria-label={`Book ${contractor.name}`}>
+      <div className="modal" onClick={(e) => e.stopPropagation()} ref={modalRef}>
+        <button className="modal-close" onClick={onCancel} aria-label="Close modal">
           &times;
         </button>
         <h2>Book {contractor.name}</h2>
         <div className="booking-details">
           <div className="detail-row">
             <span className="detail-label">Date</span>
-            <span>{formatDate(date)}</span>
+            <span>{formatDateLong(date)}</span>
           </div>
           <div className="detail-row">
             <span className="detail-label">Time</span>
@@ -109,6 +129,7 @@ function BookingModal({ contractor, date, slot, onConfirm, onCancel }) {
                     type="button"
                     className={`toggle-btn ${constructionType === "new" ? "active" : ""}`}
                     onClick={() => setConstructionType("new")}
+                    aria-label="Select new construction"
                   >
                     New Construction
                     <span className="toggle-rate">${contractor.rates.new}/sqft</span>
@@ -117,6 +138,7 @@ function BookingModal({ contractor, date, slot, onConfirm, onCancel }) {
                     type="button"
                     className={`toggle-btn ${constructionType === "old" ? "active" : ""}`}
                     onClick={() => setConstructionType("old")}
+                    aria-label="Select existing construction"
                   >
                     Existing / Old Construction
                     <span className="toggle-rate">${contractor.rates.old}/sqft</span>
