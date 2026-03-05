@@ -140,6 +140,13 @@ function App() {
         </div>
         <div className="header-actions">
           <button
+            className="dashboard-btn"
+            onClick={() => { setSelectedId(null); setMobileView("list"); }}
+            aria-label="Go to dashboard"
+          >
+            <span>Dashboard</span>
+          </button>
+          <button
             className="theme-toggle"
             onClick={() => setTheme(theme === "dark" ? "light" : theme === "light" ? "system" : "dark")}
             aria-label={`Theme: ${theme}. Click to change.`}
@@ -257,13 +264,69 @@ function App() {
               mobileBackButton={() => setMobileView("list")}
             />
           ) : (
-            <div className="empty-schedule">
-              <div className="empty-icon">&#128197;</div>
-              <h2>Select a contractor</h2>
-              <p>
-                Choose a contractor from the list to view their schedule and
-                availability.
-              </p>
+            <div className="dashboard">
+              <h2 className="dashboard-title">Dashboard</h2>
+              <p className="dashboard-subtitle">Active contractors by specialty</p>
+              <div className="dashboard-grid">
+                {Object.entries(
+                  contractors.reduce((acc, c) => {
+                    if (!acc[c.specialty]) acc[c.specialty] = { available: 0, limited: 0, booked_out: 0 };
+                    acc[c.specialty][c.availabilityStatus]++;
+                    return acc;
+                  }, {})
+                ).map(([specialty, counts]) => {
+                  const active = counts.available + counts.limited;
+                  const total = counts.available + counts.limited + counts.booked_out;
+                  return (
+                    <div key={specialty} className="dashboard-card">
+                      <div className="dashboard-card-header">
+                        <span className="dashboard-specialty">{specialty}</span>
+                        <span className="dashboard-total">{total}</span>
+                      </div>
+                      <div className="dashboard-bar">
+                        {counts.available > 0 && (
+                          <div className="bar-segment bar-available" style={{ flex: counts.available }} />
+                        )}
+                        {counts.limited > 0 && (
+                          <div className="bar-segment bar-limited" style={{ flex: counts.limited }} />
+                        )}
+                        {counts.booked_out > 0 && (
+                          <div className="bar-segment bar-booked" style={{ flex: counts.booked_out }} />
+                        )}
+                      </div>
+                      <div className="dashboard-counts">
+                        {counts.available > 0 && (
+                          <span className="count-tag available">{counts.available} available</span>
+                        )}
+                        {counts.limited > 0 && (
+                          <span className="count-tag limited">{counts.limited} limited</span>
+                        )}
+                        {counts.booked_out > 0 && (
+                          <span className="count-tag booked">{counts.booked_out} booked</span>
+                        )}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+              <div className="dashboard-summary">
+                <div className="summary-stat">
+                  <span className="summary-value">{contractors.length}</span>
+                  <span className="summary-label">Total</span>
+                </div>
+                <div className="summary-stat">
+                  <span className="summary-value">{contractors.filter(c => c.availabilityStatus === "available").length}</span>
+                  <span className="summary-label">Available</span>
+                </div>
+                <div className="summary-stat">
+                  <span className="summary-value">{contractors.filter(c => c.availabilityStatus === "limited").length}</span>
+                  <span className="summary-label">Limited</span>
+                </div>
+                <div className="summary-stat">
+                  <span className="summary-value">{contractors.filter(c => c.availabilityStatus === "booked_out").length}</span>
+                  <span className="summary-label">Booked Out</span>
+                </div>
+              </div>
             </div>
           )}
         </main>
